@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres
+    container_name: ticket_booker_db
+    env_file:
+      - .env
+    restart: always
+    shm_size: 128mb
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ticket_booker"]
+      interval: 10s
+      retries: 3
+  db_creation:
+    build: ./create_db
+    container_name: db_creation
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./create_db:/init_db
+    restart: "no"
+  fastapi:
+    build: ./ticket_booker
+    container_name: "ticket_booker_fastapi"
+    env_file:
+      - .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    volumes:
+      - ./ticket_booker:/app
+volumes:
+  pg_data:
+
