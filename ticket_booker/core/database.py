@@ -9,7 +9,7 @@ class DBConnection:
             self.connections = pool.SimpleConnectionPool(
                 minconn = 2, maxconn = 15,
                 dbname = POSTGRES_DB, user = POSTGRES_USER, password = POSTGRES_PASSWORD,
-                host = "localhost", port = '5432'
+                host = POSTGRES_HOST, port = '5432'
             )
         except Exception as e:
             print(e)
