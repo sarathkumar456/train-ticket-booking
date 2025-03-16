@@ -7,15 +7,13 @@ load_dotenv()
 POSTGRES_USER = os.getenv('POSTGRES_USER')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
 POSTGRES_DB = os.getenv('POSTGRES_DB')
-# POSTGRES_URI = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhost:5432/{POSTGRES_DB}"
-
-print(POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB)
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
 
 conn = psycopg2.connect(
     dbname = POSTGRES_DB,
     user = POSTGRES_USER,
     password = POSTGRES_PASSWORD,
-    host = "db",
+    host = POSTGRES_HOST,
     port = "5432"
 )
 
@@ -24,32 +22,13 @@ with conn:
         
         cursor.execute("DROP TABLE IF EXISTS passengers")
         cursor.execute("DROP TABLE IF EXISTS bookings")
-        cursor.execute("DROP TABLE IF EXISTS trains")
         
-        cursor.execute("CREATE TYPE gender_enum AS ENUM ('Male', 'Female', 'Others')")
-        cursor.execute("CREATE TYPE berth_type_enum AS ENUM ('Confirmed', 'RAC', 'WL')")
-
-        cursor.execute(
-            """
-            CREATE TABLE trains (
-                train_no INTEGER PRIMARY KEY,
-                confirmed INTEGER NOT NULL,
-                rac INTEGER NOT NULL,
-                wl INTEGER NOT NULL
-            )
-            """
-        )
-        
-        cursor.execute(
-            """
-            INSERT INTO trains (train_no, confirmed, rac, wl) VALUES (22501, 63, 9, 10)
-            """
-        )
+        cursor.execute("CREATE TYPE gender_enum AS ENUM ('male', 'female', 'others')")
+        cursor.execute("CREATE TYPE berth_type_enum AS ENUM ('confirmed', 'rac', 'wl')")
         
         cursor.execute(
             """
             CREATE TABLE bookings (
-                train_no INTEGER references trains(train_no) NOT NULL,
                 pnr VARCHAR(8) PRIMARY KEY,
                 booked_by VARCHAR(16) NOT NULL,
                 source VARCHAR(5) NOT NULL,
