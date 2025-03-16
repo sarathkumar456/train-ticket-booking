@@ -1,7 +1,7 @@
 from psycopg2 import pool
 from .config import POSTGRES_DB, POSTGRES_HOST, POSTGRES_PASSWORD, POSTGRES_USER
 from fastapi.exceptions import HTTPException
-
+print(POSTGRES_HOST)
 class DBConnection:            
     
     def __init__(self):
@@ -9,7 +9,7 @@ class DBConnection:
             self.connections = pool.SimpleConnectionPool(
                 minconn = 2, maxconn = 15,
                 dbname = POSTGRES_DB, user = POSTGRES_USER, password = POSTGRES_PASSWORD,
-                host = POSTGRES_HOST, port = '5432'
+                host = "localhost", port = '5432'
             )
         except Exception as e:
             print(e)
