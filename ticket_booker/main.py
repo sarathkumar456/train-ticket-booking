@@ -1,7 +1,6 @@
-from fastapi import FastAPI
-import psycopg2
+from fastapi import APIRouter, FastAPI
+from src.v1 import router as v1_router
 
 app = FastAPI()
-@app.get("/test")
-def test():
-    return "ok"
+app.include_router(v1_router)
+
