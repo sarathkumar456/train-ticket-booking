@@ -1,5 +1,8 @@
 from dotenv import load_dotenv
 import os
+import pytz
+
+IST = pytz.timezone("Asia/Kolkata")
 
 load_dotenv()
 
