@@ -49,6 +49,7 @@ with conn:
                 name VARCHAR(50) NOT NULL,
                 age INTEGER CHECK( age > 0 ),
                 gender gender_enum NOT NULL,
+                gaurdian_id INTEGER references passengers(id),
                 berth_type berth_type_enum NOT NULL,
                 berth_no VARCHAR(4),
                 is_cancelled BOOLEAN DEFAULT false,
@@ -56,4 +57,24 @@ with conn:
             )
             """
         )
-
+        
+        cursor.execute(
+            """
+            CREATE TABLE berth_map (
+                id SERIAL PRIMARY KEY,
+                berth_type berth_type_enum NOT NULL,
+                berth_no VARCHAR(4),
+                occupied BOOLEAN DEFAULT false
+            )
+            """
+        )
+        
+        
+        confirmed_seat_map = [("confirmed", f"L{num}") for num in range(1, 33)] + [("confirmed", f"L{num}") for num in range(1, 32)]
+        rac_map = [("rac", f"RAC{num}") for num in range(1, 10)]
+        wl_map = [("wl", None) for num in range(1, 11)]
+        cursor.executemany(
+            "INSERT INTO berth_map (berth_type, berth_no) VALUES (%s, %s)",
+            confirmed_seat_map + rac_map + wl_map
+        )
+        
